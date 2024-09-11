@@ -1,0 +1,48 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://oss.sonatype.org"
+    }
+    mavenCentral()
+  }
+}
+
+plugins {
+  id 'idea'
+  id 'eclipse'
+  id 'project-report'
+  id 'com.diffplug.spotless' version '6.21.0'
+  id 'org.wiremock.tools.gradle.wiremock-extension-convention' version '0.2.0'
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+ext {
+  versions = [
+      wiremock    : "3.6.0"
+  ]
+}
+
+dependencies {
+  api "org.wiremock:wiremock:$versions.wiremock"
+}
+
+shadowJar {
+  mergeServiceFiles()
+
+  exclude 'META-INF/maven/**'
+  exclude 'META-INF/versions/17/**'
+  exclude 'META-INF/versions/21/**'
+  exclude 'module-info.class'
+}
+
+test {
+  useJUnitPlatform()
+  testLogging {
+    events "PASSED", "FAILED", "SKIPPED"
+    exceptionFormat "full"
+  }
+}
